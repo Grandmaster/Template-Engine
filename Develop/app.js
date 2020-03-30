@@ -29,7 +29,12 @@ inquirer
     }
   ])
   .then(function(response) {
-    console.log(response);
+    // Creating an array of prompts for inquirer and objects to store data
+    var promptList = [];
+    var employeeList = {};
+    var engineerList = {};
+    var internList = {};
+    // Creating the various prompts
     managerPrompt = {
       type: "input",
       message:
@@ -40,14 +45,52 @@ inquirer
       type: "input",
       message:
         'Please enter information about an engineer for this team, in this format: "name id email github_username" : ',
-      name: "manager"
+      name: "engineer"
     };
     internPrompt = {
       type: "input",
       message:
         'Please enter information about an intern for this team, in this format: "name id email school" : ',
-      name: "manager"
+      name: "intern"
     };
+    // Adding the prompts to the array based on response data from the inquirer
+    promptList.push(managerPrompt);
+    for (var i = 0; i < parseInt(response.engineerCount); i++) {
+      promptList.push(engineerPrompt);
+    }
+    for (var i = 0; i < parseInt(response.internCount); i++) {
+      promptList.push(internPrompt);
+    }
+    // function to prompt the user to enter info for employees.
+    async function generateEmployees() {
+      eCount = 0;
+      iCount = 0;
+      for (let i of promptList) {
+        if (i.name == "engineer") {
+          await inquirer.prompt(i).then(response => {
+            eCount++;
+            Object.assign(engineerList, { [eCount]: response });
+          });
+        } else if (i.name == "intern") {
+          await inquirer.prompt(i).then(response => {
+            iCount++;
+            Object.assign(internList, { [iCount]: response });
+          });
+        } else if (i.name == "manager") {
+          await inquirer.prompt(i).then(response => {
+            Object.assign(employeeList, response);
+          });
+        }
+      }
+      console.log(engineerList);
+      Object.assign(
+        employeeList,
+        { engineers: engineerList },
+        { interns: internList }
+      );
+      console.log(employeeList);
+    }
+    generateEmployees();
   });
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
