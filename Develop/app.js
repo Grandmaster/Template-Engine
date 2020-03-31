@@ -62,7 +62,7 @@ inquirer
       promptList.push(internPrompt);
     }
     // function to prompt the user to enter info for employees.
-    async function generateEmployees() {
+    async function enterEmployeeInfo() {
       eCount = 0;
       iCount = 0;
       for (let i of promptList) {
@@ -82,16 +82,42 @@ inquirer
           });
         }
       }
-      console.log(engineerList);
       Object.assign(
         employeeList,
         { engineers: engineerList },
         { interns: internList }
       );
       console.log(employeeList);
+      await generateEmployeeObjects(employeeList);
     }
-    generateEmployees();
+    enterEmployeeInfo();
   });
+// Function that takes the info entered by the user and builds employee objects out of it
+async function generateEmployeeObjects(employeeList) {
+  // Creates manager object
+  const managerInfo = employeeList.manager.split(" ");
+  [name, id, email, office] = managerInfo;
+  let manager = new Manager(name, id, email, office);
+  // Creates engineer objects
+  engineerList = [];
+  for (let person in employeeList.engineers) {
+    const engineerInfo = employeeList.engineers[person].engineer.split(" ");
+    [name, id, email, g_username] = engineerInfo;
+    let engineer = new Engineer(name, id, email, g_username);
+    engineerList.push(engineer);
+  }
+  // Creates new intern objects
+  internList = [];
+  for (let person in employeeList.interns) {
+    const internInfo = employeeList.interns[person].intern.split(" ");
+    [name, id, email, school] = internInfo;
+    let intern = new Intern(name, id, email, school);
+    internList.push(intern);
+  }
+  // Puts all objects in one array
+  var employeeObjectList = [manager].concat(engineerList, internList);
+  console.log(employeeObjectList);
+}
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
