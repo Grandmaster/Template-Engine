@@ -125,6 +125,16 @@ async function generateEmployeeObjects(employeeList) {
     }
     console.log("file was successfully created!");
   });
+  // Creates styling for the html page, and writes it to the output folder
+  var style = `.card.employee-card {
+      margin: 10px;
+  }`;
+  fs.writeFile("./output/style.css", style, err => {
+    if (err) {
+      throw err;
+    }
+    console.log("Added styling to the page!");
+  });
 }
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
