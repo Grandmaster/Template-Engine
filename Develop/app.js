@@ -118,6 +118,7 @@ async function generateEmployeeObjects(employeeList) {
   console.log(employeeObjectList);
   // Writes data to a html file.
   var html = render(employeeObjectList);
+  html = html.replace(/,/g, "");
   fs.writeFile("./output/team.html", html, err => {
     if (err) {
       throw err;
