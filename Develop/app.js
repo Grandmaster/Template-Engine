@@ -116,7 +116,14 @@ async function generateEmployeeObjects(employeeList) {
   // Puts all objects in one array
   var employeeObjectList = [manager].concat(engineerList, internList);
   console.log(employeeObjectList);
+  // Writes data to a html file.
   var html = render(employeeObjectList);
+  fs.writeFile("./output/team.html", html, err => {
+    if (err) {
+      throw err;
+    }
+    console.log("file was successfully created!");
+  });
 }
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
