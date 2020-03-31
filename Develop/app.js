@@ -87,7 +87,6 @@ inquirer
         { engineers: engineerList },
         { interns: internList }
       );
-      console.log(employeeList);
       await generateEmployeeObjects(employeeList);
     }
     enterEmployeeInfo();
@@ -117,6 +116,7 @@ async function generateEmployeeObjects(employeeList) {
   // Puts all objects in one array
   var employeeObjectList = [manager].concat(engineerList, internList);
   console.log(employeeObjectList);
+  var html = render(employeeObjectList);
 }
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
