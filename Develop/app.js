@@ -91,7 +91,8 @@ inquirer
     }
     enterEmployeeInfo();
   });
-// Function that takes the info entered by the user and builds employee objects out of it
+// Function that takes the info entered by the user and builds employee objects out of it.
+// It also creates a html file out of the data, and writes it to the output folder
 async function generateEmployeeObjects(employeeList) {
   // Creates manager object
   const managerInfo = employeeList.manager.split(" ");
@@ -115,7 +116,6 @@ async function generateEmployeeObjects(employeeList) {
   }
   // Puts all objects in one array
   var employeeObjectList = [manager].concat(engineerList, internList);
-  console.log(employeeObjectList);
   // Writes data to a html file.
   var html = render(employeeObjectList);
   html = html.replace(/,/g, "");
@@ -128,6 +128,14 @@ async function generateEmployeeObjects(employeeList) {
   // Creates styling for the html page, and writes it to the output folder
   var style = `.card.employee-card {
       margin: 10px;
+  }
+  .jumbotron{
+    background-color: red;
+    color: white;
+  }
+  .card-header{
+    background-color: blue;
+    color: white;
   }`;
   fs.writeFile("./output/style.css", style, err => {
     if (err) {
