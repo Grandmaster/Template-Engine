@@ -9,6 +9,15 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+
+// Code to check format of response to questions
+function checkResponse(response) {
+  if (/^\w+ \w+ \w+@\w+.\w+ \w+$/.test(response)) return true;
+  else return false;
+}
+// Initial variable to check whether error has been made. If true, the app is prevented from creating the html files
+var status = true;
+// Initial prompts
 inquirer
   .prompt([
     {
@@ -29,6 +38,16 @@ inquirer
     }
   ])
   .then(function(response) {
+    // Checking to see that the correct number of employees has been entered
+    if (
+      parseInt(response.engineerCount) + parseInt(response.internCount) + 1 !==
+      parseInt(response.count)
+    ) {
+      console.log(
+        "You seem to have made an error in entering the number of people in your team. Please try again."
+      );
+      return;
+    }
     // Creating an array of prompts for inquirer and objects to store data
     var promptList = [];
     var employeeList = {};
@@ -66,27 +85,51 @@ inquirer
       eCount = 0;
       iCount = 0;
       for (let i of promptList) {
+        // Calling return here ensures the user does not have to enter info for each employee before the app restarts, if
+        // he/she made a mistake
+        if (!status) return;
         if (i.name == "engineer") {
           await inquirer.prompt(i).then(response => {
+            if (!checkResponse(response.engineer)) {
+              console.log(
+                "Your answer is not in the provided format. Please try again."
+              );
+              status = false;
+            }
             eCount++;
             Object.assign(engineerList, { [eCount]: response });
           });
         } else if (i.name == "intern") {
           await inquirer.prompt(i).then(response => {
+            if (!checkResponse(response.intern)) {
+              console.log(
+                "Your answer is not in the provided format. Please try again."
+              );
+              status = false;
+            }
             iCount++;
             Object.assign(internList, { [iCount]: response });
           });
         } else if (i.name == "manager") {
           await inquirer.prompt(i).then(response => {
+            if (!checkResponse(response.manager)) {
+              console.log(
+                "Your answer is not in the provided format. Please try again."
+              );
+              status = false;
+            }
             Object.assign(employeeList, response);
           });
         }
       }
+      // Ends function if any of the responses are not in the provided format
+      if (!status) return;
       Object.assign(
         employeeList,
         { engineers: engineerList },
         { interns: internList }
       );
+      // Generates html
       await generateEmployeeObjects(employeeList);
     }
     enterEmployeeInfo();
